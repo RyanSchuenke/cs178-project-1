@@ -21,7 +21,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        query = f"SELECT * FROM users WHERE username=%(username)s AND password=%(password)s"
+        query = f"SELECT * FROM users WHERE username=%(username)s AND pass=%(password)s"
         args = {'username': username, 'password': password}
         result = execute_query(query, args)
         if result:
