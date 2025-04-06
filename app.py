@@ -21,14 +21,15 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        query = f"SELECT * FROM users WHERE username=%(username)s AND pass=%(password)s"
+        query = f"SELECT * FROM users WHERE username=%(username)s AND password=%(password)s"
         args = {'username': username, 'password': password}
         result = execute_query(query, args)
-        if result:
+        print(result)
+        if len(result)>0:
             session["user_id"] = result[0][0]
             return redirect(url_for('home'))
         else:
-            flash("Invalid username or password", 'error')
+            flash("Invalid username or password", 'danger')
             return redirect(url_for('login'))
     return render_template('login.html')
 
@@ -38,17 +39,27 @@ def signup():
         username = request.form['username']
         password = request.form['password']
         # Check if username already exists
-        query = f"SELECT * FROM users WHERE username=%(username)s"
+        query = f"""
+        SELECT * 
+        FROM users 
+        WHERE username=%(username)s
+        """
+        
         args = {'username': username}
         result = execute_query(query, args)
-        if result:
-            flash("Username already exists", 'error')
+        if len(result)>0:
+            flash("Username already exists", 'danger')
             return redirect(url_for('signup'))
         
         # Insert new user into the database
-        query = f"INSERT INTO users (username, password) VALUES (%(username)s, %(password)s)"
+        query = f"""
+        INSERT INTO users 
+        (username, password) 
+        VALUES (%(username)s, %(password)s)
+        """
+        
         args = {'username': username, 'password': password}
-        execute_query(query, args)
+        result=execute_insert(query, args)
         flash("User created successfully", 'success')
         return redirect(url_for('login'))
     return render_template('signup.html')

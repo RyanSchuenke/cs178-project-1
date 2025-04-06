@@ -8,20 +8,33 @@ def get_connection():
         host= creds.host,
         user= creds.user, 
         password = creds.password,
-        db=creds.db,
+        database=creds.db,
         )
 
-def execute_query(query, args=()):
+def execute_query(query, args):
     """execute a sql query and return the result, redirct to the same page if error occurs."""
     try:
         connection = get_connection()
         cur = connection.cursor()
         cur.execute(query, args)
         rows = cur.fetchall()
-        cur.commit()
         cur.close()
         connection.close()
     except Exception as e:
-        flash({"error": str(e)}, 'error')
+        flash(str(e), 'danger')
         return redirect(request.url)
     return rows
+
+def execute_insert(query, args):
+    """execute a sql query and return the result, redirct to the same page if error occurs."""
+    try:
+        connection = get_connection()
+        cur = connection.cursor()
+        cur.execute(query, args)
+        rows = cur.fetchall()
+        connection.commit()
+        cur.close()
+        connection.close()
+    except Exception as e:
+        flash(str(e), 'danger')
+        return redirect(request.url)
