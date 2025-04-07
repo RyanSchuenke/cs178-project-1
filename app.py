@@ -1,17 +1,18 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session
 from sql_connect import *
+from dynamo_connect import *
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_key_nobody_can_guess'
 
 @app.route('/')
 def index():
-    session['user_id'] = None
+    session['username'] = None
     return redirect(url_for('login'))
 
 @app.route('/home')
 def home():
-    if session["user_id"] is not None:
+    if session["username"] is not None:
         return render_template('home.html')
     else:
         return redirect(url_for('login'))
@@ -21,17 +22,14 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        query = f"SELECT * FROM users WHERE username=%(username)s AND password=%(password)s"
-        args = {'username': username, 'password': password}
-        result = execute_query(query, args)
-        print(result)
-        if len(result)>0:
-            session["user_id"] = result[0][0]
+        if query_login(username, password):
+            session["username"] = username
             return redirect(url_for('home'))
         else:
-            flash("Invalid username or password", 'danger')
+            flash("Username/Password is incorrect", "danger") 
             return redirect(url_for('login'))
-    return render_template('login.html')
+    else:
+        return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -39,32 +37,14 @@ def signup():
         username = request.form['username']
         password = request.form['password']
         # Check if username already exists
-        query = f"""
-        SELECT * 
-        FROM users 
-        WHERE username=%(username)s
-        """
-        
-        args = {'username': username}
-        result = execute_query(query, args)
-        if len(result)>0:
-            flash("Username already exists", 'danger')
+        if query_username(username):
+            flash("username already exists", "danger")
             return redirect(url_for('signup'))
-        
-        # Insert new user into the database
-        query = f"""
-        INSERT INTO users 
-        (username, password) 
-        VALUES (%(username)s, %(password)s)
-        """
-        
-        args = {'username': username, 'password': password}
-        result=execute_insert(query, args)
-        flash("User created successfully", 'success')
-        return redirect(url_for('login'))
-    return render_template('signup.html')
-
-
+        else:
+            create_user(username, password)
+            return redirect(url_for('login'))
+    else: 
+        return render_template('signup.html')
 
 
 if __name__ == '__main__':

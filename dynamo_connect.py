@@ -22,7 +22,7 @@ def create_user(username, password):
         )
         return True
     except botocore.exceptions.ClientError:
-        flash("username taken", "error")
+        flash("username taken", "danger")
         return False
 
 
@@ -39,7 +39,7 @@ def update_password(username, password, new_password):
         flash("password updated", "success")
         return True
     except botocore.exceptions.ClientError:
-        flash("user not in database", "error")
+        flash("user not in database", "danger")
         return False
 
 
@@ -52,7 +52,7 @@ def delete_user(username):
         flash("user deleted", "success")
         return True
     except botocore.exceptions.ClientError:
-        flash("user not in database", "error")
+        flash("user not in database", "danger")
         return False
 
 
@@ -61,16 +61,30 @@ def query_login(username, password):
     try:
         response = table.get_item(
             Key = {
-                "username": username, 
-                "password": password
+                "username": username
             }
         )
         user = response.get("Item")
         if user == None:
-            flash("Username/Password is incorrect", "error")
+            return False
+        else:
+            return user['password'] == password
+    except Exception as e:
+        return False
+
+def query_username(username):
+    """query for username and password"""
+    try:
+        response = table.get_item(
+            Key = {
+                "username": username
+            }
+        )
+        user = response.get("Item")
+        if user == None:
             return False
         else:
             return True
     except botocore.exceptions.ClientError:
-        flash("Username/Password is incorrect", "error") 
+        flash("Username/Password is incorrect", "danger") 
         return False
