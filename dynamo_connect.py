@@ -6,10 +6,10 @@
 import boto3
 import botocore
 from flask import flash
-import sql_credentials
+import credentials
 
 dynamodb = boto3.resource('dynamodb', region_name="us-east-1")
-table = dynamodb.Table(sql_credentials.dynamoDB_table)
+table = dynamodb.Table(credentials.dynamoDB_table)
 
 def create_user(username, password):
     """Create new user in table"""

@@ -1,6 +1,6 @@
 import pymysql
 from flask import flash, redirect, url_for, request
-import sql_credentials as creds
+import credentials as creds
 
 def get_connection():
     """Create a new database connection."""
