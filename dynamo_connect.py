@@ -1,8 +1,3 @@
-# name: Ryan Schuenke
-# date: 3/4/2025
-# description: Implementation of CRUD operations with DynamoDB database CS178 Lab #9
-# proposed score: 5 (out of 5)
-
 import boto3
 import botocore
 from flask import flash
