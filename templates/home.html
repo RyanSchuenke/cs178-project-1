@@ -19,5 +19,10 @@
     <h1>
         Home
     </h1>
+    <ul>
+        {% for country in countries %}
+            <li>{{country[1]}} ({{country[0]}}) population: {{country[6]}}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

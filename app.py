@@ -13,7 +13,8 @@ def index():
 @app.route('/home')
 def home():
     if session["username"] is not None:
-        return render_template('home.html')
+        countries = execute_query("SELECT * FROM country ORDER BY Population DESC LIMIT 10", {})
+        return render_template('home.html', countries = countries)
     else:
         return redirect(url_for('login'))
 
