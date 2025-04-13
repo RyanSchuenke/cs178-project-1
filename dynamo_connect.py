@@ -21,20 +21,17 @@ def create_user(username, password):
         return False
 
 
-def update_password(username, password, new_password):
+def update_password(username, new_password):
     """update password for user"""
     try: 
         table.update_item(
             Key = {
-            'username': username,
-            'password': password,
+            'username': username
             }, 
             UpdateExpression = "SET password = :r", ExpressionAttributeValues = {':r': new_password}
         )
-        flash("password updated", "success")
         return True
     except botocore.exceptions.ClientError:
-        flash("user not in database", "danger")
         return False
 
 

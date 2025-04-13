@@ -16,6 +16,7 @@ def home():
         countries = execute_query("SELECT * FROM country ORDER BY Population DESC LIMIT 10", {})
         return render_template('home.html', countries = countries)
     else:
+        flash('User must be logged in to view page', 'warning')
         return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -50,8 +51,8 @@ def signup():
 @app.route('/delete_account', methods=['GET', 'POST'])
 def delete_account():
     if session['username'] is None:
-        flash('', 'danger')
-        redirect(url_for('login'))
+        flash('User must be logged in to view page', 'warning')
+        return redirect(url_for('login'))
     if request.method == 'GET':
         return render_template('delete_account.html', username = session["username"])
     elif request.method == 'POST':
@@ -68,6 +69,27 @@ def delete_account():
         session['username'] = None
         return redirect(url_for('login'))
 
+@app.route('/update_account', methods=['GET', 'POST'])
+def update_account():
+    if session['username'] is None:
+        flash('User must be logged in to view page', 'warning')
+        return redirect(url_for('login'))
+    
+    if request.method == 'GET':
+        return render_template('update_account.html', username = session["username"])
+    
+    elif request.method == 'POST':
+        username = session['username']
+        password = request.form['password']
+            
+        update_success = update_password(username, password)
+        if update_success:
+            flash("password updated", "success")
+            return redirect(url_for('home'))
+        else: 
+            flash("user not in database", "danger")
+            session['username'] = None
+            return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)

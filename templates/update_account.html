@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Home Page</title>
+    <title>Update Account</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -17,21 +17,13 @@
         {% endif %}
     {% endwith %}
     <h1>
-        Home
+        Update Account
     </h1>
-    <ul>
-        {% for country in countries %}
-            <li>{{country[1]}} ({{country[0]}}) population: {{country[6]}}</li>
-        {% endfor %}
-    </ul>
-    <form method="get" action="/update_account">
-        <button tpye="submit">Update account password</button>
+    <h3>
+        Update password for user "{{username}}"?
+    </h3>
+    <form method="post" action="/update_account">
+        <label for="password">Enter new password:</label>
+        <input type="text" id="password" name="password" required><br>
+        <button tpye="submit">Update Password</button>
     </form>
-    <form method="get" action="/delete_account">
-        <button tpye="submit">Delete account</button>
-    </form>
-    <form method="get" action="/">
-        <button tpye="submit">Logout</button>
-    </form>
-</body>
-</html>
