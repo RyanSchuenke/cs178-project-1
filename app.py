@@ -46,6 +46,27 @@ def signup():
             return redirect(url_for('login'))
     else: 
         return render_template('signup.html')
+    
+@app.route('/delete_account', methods=['GET', 'POST'])
+def delete_account():
+    if session['username'] is None:
+        flash('', 'danger')
+        redirect(url_for('login'))
+    if request.method == 'GET':
+        return render_template('delete_account.html', username = session["username"])
+    elif request.method == 'POST':
+        username = request.form['username']
+        if username != session["username"]:
+            flash("incorrect username", "warning")
+            return redirect(url_for("delete_account"))
+            
+        deleted = delete_user(username)
+        if deleted:
+            flash("user deleted", "success")
+        else: 
+            flash("user not in database", "danger")
+        session['username'] = None
+        return redirect(url_for('login'))
 
 
 if __name__ == '__main__':

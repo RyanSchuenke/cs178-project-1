@@ -44,10 +44,8 @@ def delete_user(username):
         table.delete_item(
             Key = {"username": username}
         )
-        flash("user deleted", "success")
         return True
     except botocore.exceptions.ClientError:
-        flash("user not in database", "danger")
         return False
 
 
