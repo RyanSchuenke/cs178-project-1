@@ -11,19 +11,6 @@ def index():
     session['username'] = None
     return redirect(url_for('login'))
 
-@app.route('/home')
-def home():
-    # displays home page if username is set (logged in)
-    if session["username"] is not None:
-        # get top ten countries with highest population
-        countries = execute_query("SELECT * FROM country ORDER BY Population DESC LIMIT 10", {})
-        return render_template('home.html', countries = countries)
-    
-    # redirects to login page if not logged in
-    else:
-        flash('User must be logged in to view page', 'warning')
-        return redirect(url_for('login'))
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """"Display login on GET, login user on POST"""
@@ -63,11 +50,28 @@ def signup():
             return redirect(url_for('signup'))
         else:
             # if username not taken, add credentials to NoSQL database and go to login
-            create_user(username, password)
-            return redirect(url_for('login'))
+            create_success = create_user(username, password)
+            if create_success:
+                return redirect(url_for('login'))
+            else: 
+                flash("username already exists", "danger")
+                return redirect(url_for('signup'))
     else: 
         return render_template('signup.html')
+
+@app.route('/home')
+def home():
+    # displays home page if username is set (logged in)
+    if session["username"] is not None:
+        # get top ten countries with highest population
+        countries = execute_query("SELECT * FROM country ORDER BY Population DESC LIMIT 10", {})
+        return render_template('home.html', countries = countries)
     
+    # redirects to login page if not logged in
+    else:
+        flash('User must be logged in to view page', 'warning')
+        return redirect(url_for('login'))
+
 @app.route('/delete_account', methods=['GET', 'POST'])
 def delete_account():
     """Display delete account on GET, delete account on POST"""

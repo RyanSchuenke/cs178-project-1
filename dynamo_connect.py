@@ -17,7 +17,6 @@ def create_user(username, password):
         )
         return True
     except botocore.exceptions.ClientError:
-        flash("username taken", "danger")
         return False
 
 
@@ -49,12 +48,7 @@ def delete_user(username):
 def query_login(username, password):
     """query for username and password"""
     try:
-        response = table.get_item(
-            Key = {
-                "username": username
-            }
-        )
-        user = response.get("Item")
+        user = query_username(username)
         if user == None:
             return False
         else:
@@ -63,7 +57,7 @@ def query_login(username, password):
         return False
 
 def query_username(username):
-    """query for username and password"""
+    """query for username and password, returns user"""
     try:
         response = table.get_item(
             Key = {
@@ -71,10 +65,6 @@ def query_username(username):
             }
         )
         user = response.get("Item")
-        if user == None:
-            return False
-        else:
-            return True
+        return user
     except botocore.exceptions.ClientError:
-        flash("Username/Password is incorrect", "danger") 
-        return False
+        return None
