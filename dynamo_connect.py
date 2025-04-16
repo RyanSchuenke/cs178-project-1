@@ -44,18 +44,6 @@ def delete_user(username):
     except botocore.exceptions.ClientError:
         return False
 
-
-def query_login(username, password):
-    """query for username and password"""
-    try:
-        user = query_username(username)
-        if user == None:
-            return False
-        else:
-            return user['password'] == password
-    except Exception as e:
-        return False
-
 def query_username(username):
     """query for username and password, returns user"""
     try:
@@ -68,3 +56,16 @@ def query_username(username):
         return user
     except botocore.exceptions.ClientError:
         return None
+    
+def query_login(username, password):
+    """query for username and password"""
+    try:
+        user = query_username(username)
+        if user == None:
+            return False
+        else:
+            return user['password'] == password
+    except Exception as e:
+        return False
+
+
