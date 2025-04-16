@@ -87,6 +87,7 @@ def play():
                                LIMIT 2""", {"country":country})
         if len(cities) < 2:
             flash('Country not found or does not have more than one city.', 'warning')
+            return redirect(url_for('home'))
         return render_template('play.html', cities = cities)
 
 @app.route('/score', methods=["POST"])
