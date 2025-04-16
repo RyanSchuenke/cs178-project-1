@@ -89,7 +89,11 @@ def play():
                                LIMIT 2""", {"country":country})
         
         # if there are not enough cities or country was misspelled, redirect back home
-        if len(cities) < 2:
+        try:
+            if len(cities) < 2:
+                flash('Country not found or does not have more than one city.', 'warning')
+                return redirect(url_for('home'))
+        except Exception:
             flash('Country not found or does not have more than one city.', 'warning')
             return redirect(url_for('home'))
         
