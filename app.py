@@ -1,3 +1,5 @@
+# Ryan Schuenke
+
 from flask import Flask, render_template, redirect, url_for, flash, request, session
 from sql_connect import *
 from dynamo_connect import *
@@ -77,7 +79,7 @@ def play():
         flash('User must be logged in to view page', 'warning')
         return redirect(url_for('login'))
     
-    # for GET methods, display the home page with their current username
+    # for GET methods, display the game page with two random cities from the choosen country
     elif request.method == 'POST':
         country = request.form['country']
         cities = execute_query("""SELECT city.Name, country.Name, city.population, city.CountryCode, country.Code 
@@ -85,9 +87,12 @@ def play():
                                WHERE LOWER(country.Name) = LOWER(%(country)s) 
                                ORDER BY RAND()
                                LIMIT 2""", {"country":country})
+        
+        # if there are not enough cities or country was misspelled, redirect back home
         if len(cities) < 2:
             flash('Country not found or does not have more than one city.', 'warning')
             return redirect(url_for('home'))
+        
         return render_template('play.html', cities = cities)
 
 @app.route('/score', methods=["POST"])
@@ -97,20 +102,25 @@ def score():
         flash('User must be logged in to view page', 'warning')
         return redirect(url_for('login'))
     
-    # for GET methods, display the home page with their current username
+    # for GET methods, display the score page with their win or loss
     elif request.method == 'POST':
+        
+        # get choice population and remaining option's population
         choice = request.form['city choice']
         guessed_higher = request.form[choice]
         for k in request.form.keys():
             if k not in ['city choice', choice]:
                 not_choice = k
         guessed_lower = request.form[not_choice]
+        
+        # compare to find if user was correct or not
         if guessed_higher >= guessed_lower:
             result = 'correct!'
             comparison = choice + " (" + request.form[choice] + ") > " + not_choice + " (" + request.form[not_choice] + ")"
         else: 
             result = 'incorrect.'
             comparison = not_choice + " (" + request.form[not_choice] + ") > "+ choice + " (" + request.form[choice] + ")"
+        
         return render_template('score.html', result = result, comparison = comparison)
     
 
