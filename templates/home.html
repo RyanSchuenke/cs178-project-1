@@ -19,17 +19,22 @@
     <h1>
         Home
     </h1>
-    <ul>
-        {% for country in countries %}
-            <li>{{country[1]}} ({{country[0]}}) population: {{country[6]}}</li>
-        {% endfor %}
-    </ul>
+
+    <form method="post" action="/play">
+        <label for="country">Country name:</label>
+        <input type="text" id="country" name="country" required><br>
+
+        <button type="submit">Play</button>
+    </form>
+
     <form method="get" action="/update_account">
         <button tpye="submit">Update account password</button>
     </form>
+    
     <form method="get" action="/delete_account">
         <button tpye="submit">Delete account</button>
     </form>
+    
     <form method="get" action="/">
         <button tpye="submit">Logout</button>
     </form>

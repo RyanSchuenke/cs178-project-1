@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Game Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- display a flash message here, if necessary -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <h1>
+        Which has a larger population?
+    </h1>
+    <form method="post" action="/score">
+        {% for i in range(2) %}
+            <label>{{cities[i][0]}}, {{cities[i][1]}}</li>
+            <input type="hidden" id="{{cities[i][0]}}" name="{{cities[i][0]}}" value="{{cities[i][2]}}">
+            <input type="radio" id="{{cities[i][0]}}" name="city choice" value="{{cities[i][0]}}" required><br>
+        {% endfor %}
+        <button type="submit">Select</button>
+    </form>
+    <br><br>
+
+    <form method="post" action="/home">
+        <button type="submit">Return Home</button>
+    </form>

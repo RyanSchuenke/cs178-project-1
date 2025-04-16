@@ -63,14 +63,32 @@ def signup():
 def home():
     # displays home page if username is set (logged in)
     if session["username"] is not None:
-        # get top ten countries with highest population
-        countries = execute_query("SELECT * FROM country ORDER BY Population DESC LIMIT 10", {})
-        return render_template('home.html', countries = countries)
+        return render_template('home.html')
     
     # redirects to login page if not logged in
     else:
         flash('User must be logged in to view page', 'warning')
         return redirect(url_for('login'))
+    
+@app.route('/play', methods=['POST'])
+def play():
+    # if user not logged in, redirect back to login
+    if session['username'] is None:
+        flash('User must be logged in to view page', 'warning')
+        return redirect(url_for('login'))
+    
+    # for GET methods, display the home page with their current username
+    elif request.method == 'POST':
+        country = request.form['country']
+        cities = execute_query("""SELECT city.Name, country.Name, city.population, city.CountryCode, country.Code 
+                               FROM city JOIN country ON city.CountryCode = country.Code 
+                               WHERE LOWER(country.Name) = LOWER(%(country)s) 
+                               LIMIT 2""", {"country":country})
+        if len(cities) < 2:
+            flash('Country not found or does not have more than one city.', 'warning')
+        return render_template('play.html', cities = cities)
+
+    
 
 @app.route('/delete_account', methods=['GET', 'POST'])
 def delete_account():
