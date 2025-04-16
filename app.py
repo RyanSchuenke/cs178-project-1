@@ -82,7 +82,7 @@ def play():
     # for GET methods, display the game page with two random cities from the choosen country
     elif request.method == 'POST':
         country = request.form['country']
-        cities = execute_query("""SELECT city.Name, country.Name, city.population, city.CountryCode, country.Code 
+        cities = execute_query("""SELECT city.Name, city.District, city.population, city.CountryCode, country.Code, country.Name 
                                FROM city JOIN country ON city.CountryCode = country.Code 
                                WHERE LOWER(country.Name) = LOWER(%(country)s) 
                                ORDER BY RAND()
