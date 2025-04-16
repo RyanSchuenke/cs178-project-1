@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Home Page</title>
+    <title>Game Page</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -17,10 +17,13 @@
         {% endif %}
     {% endwith %}
     <h1>
-        Home
+        You guessed {{result}}
     </h1>
+    <p>
+        {{comparison}}
+    </p>
     <h3>
-        Higher or Lower? City edition
+        Play again?
     </h3>
     <form method="post" action="/play">
         <label for="country">Country name:</label>
@@ -28,18 +31,7 @@
 
         <button type="submit">Play</button>
     </form>
-    <br><br>
-    <form method="get" action="/update_account">
-        <button tpye="submit">Update account password</button>
+
+    <form method="get" action="/home">
+        <button type="submit">Return Home</button>
     </form>
-    <br>
-    <form method="get" action="/delete_account">
-        <button tpye="submit">Delete account</button>
-    </form>
-    <br>
-    <form method="get" action="/">
-        <button tpye="submit">Logout</button>
-    </form>
-    <br>
-</body>
-</html>

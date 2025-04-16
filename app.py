@@ -83,11 +83,34 @@ def play():
         cities = execute_query("""SELECT city.Name, country.Name, city.population, city.CountryCode, country.Code 
                                FROM city JOIN country ON city.CountryCode = country.Code 
                                WHERE LOWER(country.Name) = LOWER(%(country)s) 
+                               ORDER BY RAND()
                                LIMIT 2""", {"country":country})
         if len(cities) < 2:
             flash('Country not found or does not have more than one city.', 'warning')
         return render_template('play.html', cities = cities)
 
+@app.route('/score', methods=["POST"])
+def score():
+    # if user not logged in, redirect back to login
+    if session['username'] is None:
+        flash('User must be logged in to view page', 'warning')
+        return redirect(url_for('login'))
+    
+    # for GET methods, display the home page with their current username
+    elif request.method == 'POST':
+        choice = request.form['city choice']
+        guessed_higher = request.form[choice]
+        for k in request.form.keys():
+            if k not in ['city choice', choice]:
+                not_choice = k
+        guessed_lower = request.form[not_choice]
+        if guessed_higher >= guessed_lower:
+            result = 'correct!'
+            comparison = choice + " (" + request.form[choice] + ") > " + not_choice + " (" + request.form[not_choice] + ")"
+        else: 
+            result = 'incorrect.'
+            comparison = not_choice + " (" + request.form[not_choice] + ") > "+ choice + " (" + request.form[choice] + ")"
+        return render_template('score.html', result = result, comparison = comparison)
     
 
 @app.route('/delete_account', methods=['GET', 'POST'])
