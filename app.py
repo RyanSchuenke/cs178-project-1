@@ -126,11 +126,12 @@ def score():
         
         # get choice population and remaining option's population
         choice = request.form['city choice']
-        guessed_higher = request.form[choice]
+        guessed_higher = int(request.form[choice])
+        
         for k in request.form.keys():
             if k not in ['city choice', choice]:
                 not_choice = k
-        guessed_lower = request.form[not_choice]
+        guessed_lower = int(request.form[not_choice])
         
         # compare to find if user was correct or not
         if guessed_higher >= guessed_lower:
