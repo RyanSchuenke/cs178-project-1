@@ -9,13 +9,17 @@ app.secret_key = 'super_secret_key_nobody_can_guess'
 
 @app.route('/')
 def index():
-    """Sets username to none for no signed in user. redirects to login"""
+    """
+    Sets username to none for no signed in user. redirects to login
+    """
     session['username'] = None
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """"Display login on GET, login user on POST"""
+    """"
+    Display login on GET, login user on POST
+    """
     # on POST, attempt login
     if request.method == 'POST':
         # grab username and password from form
@@ -38,7 +42,9 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    """Display signup page on GET, attempt user Sign up on post"""
+    """
+    Display signup page on GET, attempt user Sign up on post
+    """
     # for post methods
     if request.method == 'POST':
         # grab username and password from form
@@ -63,6 +69,9 @@ def signup():
 
 @app.route('/home')
 def home():
+    """
+    Home page of web application offering to  manage account or start playing game
+    """
     # displays home page if username is set (logged in)
     if session["username"] is not None:
         return render_template('home.html')
@@ -74,6 +83,9 @@ def home():
     
 @app.route('/play', methods=['POST'])
 def play():
+    """
+    display game page with two cities to guess which has a higher population
+    """
     # if user not logged in, redirect back to login
     if session['username'] is None:
         flash('User must be logged in to view page', 'warning')
@@ -101,6 +113,9 @@ def play():
 
 @app.route('/score', methods=["POST"])
 def score():
+    """
+    Display score page with check if user guessed correctly and offer chance to play again or return home
+    """
     # if user not logged in, redirect back to login
     if session['username'] is None:
         flash('User must be logged in to view page', 'warning')
@@ -130,7 +145,9 @@ def score():
 
 @app.route('/delete_account', methods=['GET', 'POST'])
 def delete_account():
-    """Display delete account on GET, delete account on POST"""
+    """
+    Display delete account on GET, delete account on POST
+    """
     # if user not logged in, redirect back to login
     if session['username'] is None:
         flash('User must be logged in to view page', 'warning')
@@ -160,7 +177,9 @@ def delete_account():
 
 @app.route('/update_account', methods=['GET', 'POST'])
 def update_account():
-    """Display update page on GET, attempt to update password on POST"""
+    """
+    Display update page on GET, attempt to update password on POST
+    """
     # if not logged in, redirect to login page
     if session['username'] is None:
         flash('User must be logged in to view page', 'warning')
